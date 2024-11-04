@@ -30,6 +30,12 @@ void Destroy_List(struct TinyLL* List)
   free(List);
 }
 
+
+/* iterator function has following structure
+void* pointer is pointer to actual data of iterated element
+bools are set to true false on first element of the list, so iterator can reset its static variables
+then they are set to false true on the last element of the list
+true true is used to access return data from outside of the iteration (look at examples in main.c)*/
 void Iterate_Over(struct TinyLL* List, void* (*Iterator_Function)(void*, bool , bool))
 {
   struct TinyLL_Node* Iterated_Node = List->First;

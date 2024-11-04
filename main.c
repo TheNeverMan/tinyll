@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 
+/* iterator usage examples */
 void* Print_LL_On_Screen(void* Data, bool first, bool last)
 {
 	if(!Data)
@@ -13,7 +14,7 @@ void* Print_LL_On_Screen(void* Data, bool first, bool last)
 		printf("[");
 	printf("%f, ", tmp);
 	if(last)
-		printf("]\n"); 
+		printf("]\n");
 	return NULL;
 }
 
@@ -24,7 +25,7 @@ void* Print_LL_String(void* Data, bool first, bool last)
 		return NULL;
 	 putchar(*((char*) Data));
 	if(last)
-		printf("\n"); 
+		printf("\n");
 	return NULL;
 }
 
@@ -36,6 +37,19 @@ void* Get_LL_Size(void* Data, bool first, bool last)
 	if(first)
 		length = 0;
 	length++;
+	return NULL;
+}
+
+void* Find_Maximum_Element_In_LL(void* Data, bool first, bool last)
+{
+	static double max;
+	if(first && last)
+		return &max;
+	double element = *((double*) Data);
+	if(first)
+		max = element;
+	if(max < element)
+		max = element;
 	return NULL;
 }
 
@@ -56,6 +70,7 @@ void* Calculate_LL_Average(void* Data, bool first, bool last)
 	return NULL;
 }
 
+/* insertion and deletion examples*/
 void Insert_Word_Space_After_Space(struct TinyLL* List)
 {
 	struct TinyLL_Node* tmp = List->First;
@@ -81,24 +96,12 @@ void Insert_Word_Space_After_Space(struct TinyLL* List)
 	}
 }
 
-void* Find_Maximum_Element_In_LL(void* Data, bool first, bool last)
-{
-	static double max;
-	if(first && last)
-		return &max;
-	double element = *((double*) Data);
-	if(first)
-		max = element;
-	if(max < element)
-		max = element;
-	return NULL;
-}
 
 int main()
 {
 	struct TinyLL* Doubles_List = Create_New_Empty_List(NULL);
 	srand(time(NULL));
-	/*Create linked list of 1000 doubles and populate it */
+	/*Create linked list of 1000000 doubles and populate it */
 	int index = 0;
 	while(index < 100000)
 	{
@@ -115,6 +118,7 @@ int main()
 	Iterate_Over(Doubles_List, Find_Maximum_Element_In_LL);
 	printf("Largest element in linked list: %f\n", *((double*) Find_Maximum_Element_In_LL(NULL, TRUE, TRUE)));
 	Destroy_List(Doubles_List);
+	/* modify a string */
 	char test_string[] = "Test String for an array";
 	index = 0;
 	struct TinyLL* String_List = Create_New_Empty_List(NULL);
