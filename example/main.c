@@ -1,4 +1,4 @@
-#include "tinyll.h"
+#include "../tinyll.h"
 #include <time.h>
 #include <stdlib.h>
 #include <stdio.h>
