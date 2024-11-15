@@ -13,11 +13,12 @@ struct TinyLL* Create_New_Empty_List(void (*Destroy_Data)(void*))
 
 struct TinyLL_Node* Destroy_Node(struct TinyLL* List, struct TinyLL_Node* Node)
 {
+  struct TinyLL_Node* Tmp = NULL;
   if(List->Destroy_Data)
     List->Destroy_Data(Node->Data);
   else
     free(Node->Data);
-  struct TinyLL_Node* Tmp = Node->Next;
+  Tmp = Node->Next;
   free(Node);
   return Tmp;
 }
@@ -56,6 +57,7 @@ void Insert_Element_After_Position(struct TinyLL* List, void* Data, struct TinyL
 {
   /*first element is inserted*/
   struct TinyLL_Node* New = malloc(sizeof(struct TinyLL_Node));
+  struct TinyLL_Node* New_Next = NULL;
   if((!List->Last))
   {
     List->First = New;
@@ -64,7 +66,7 @@ void Insert_Element_After_Position(struct TinyLL* List, void* Data, struct TinyL
     New->Next = NULL;
     return;
   }
-  struct TinyLL_Node* New_Next = After->Next;
+  New_Next = After->Next;
   New->Data = Data;
   New->Next = New_Next;
   After->Next = New;
@@ -84,9 +86,10 @@ void Insert_Element_At_The_End(struct TinyLL* List, void* Data)
 
 struct TinyLL_Node* Get_Node_Before(struct TinyLL* List, struct TinyLL_Node* Node)
 {
+  struct TinyLL_Node* out = NULL;
   if(List->First == Node)
-    return NULL;
-  struct TinyLL_Node* out = List->First;
+    return out;
+  out = List->First;
   while(out)
   {
     if(out->Next == Node)
