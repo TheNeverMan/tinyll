@@ -155,7 +155,9 @@ int main()
 	while(index < 400)
 	{
 		int* tmp = malloc(sizeof(double));
-		*(tmp) = rand() % 1001;
+		*(tmp) = rand() % 2001;
+		if(rand()%2)
+			*(tmp) = *(tmp) * -1;
 		Insert_Element_At_The_End(Integer_List, tmp);
 		index++;
 	}
