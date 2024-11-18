@@ -159,8 +159,10 @@ int main()
 		Insert_Element_At_The_End(Integer_List, tmp);
 		index++;
 	}
+	printf("List before sorting: ");
+	Iterate_Over(Integer_List, Print_Num);
 	Integer_List = Strand_Sort(Integer_List,Is_Greater_Int);
-	printf("Final sorted: ");
+	printf("Strand sorted list: ");
 	Iterate_Over(Integer_List, Print_Num);
 	Destroy_List(Integer_List);
 	printf("Seed: %i\n",seed);

@@ -173,18 +173,18 @@ static void Merge(struct TinyLL* Main, struct TinyLL* To_Be_Merged, bool (*Is_Gr
 
 struct TinyLL* Strand_Sort(struct TinyLL* List, bool (*Is_Greater_Or_Equal)(void*,void*))
 {
-
   struct TinyLL* out = Create_New_Empty_List(List->Destroy_Data);
   while(List->First)
   {
-    if(!List->First->Next)
-    {
-      Merge(out,List,Is_Greater_Or_Equal);
-      break;
-    }
     struct TinyLL* Sub_List = Create_New_Empty_List(List->Destroy_Data);
     struct TinyLL_Node* Iterator = NULL;
     struct TinyLL_Node* Prev_Iterator = NULL;
+    if(!List->First->Next)
+    {
+      Merge(out,List,Is_Greater_Or_Equal);
+      free(Sub_List);
+      break;
+    }
     Sub_List->First = List->First;
     Sub_List->Last = List->First;
     List->First = List->First->Next;
