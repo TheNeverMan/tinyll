@@ -154,7 +154,7 @@ int main()
 	index = 0;
 	while(index < 400)
 	{
-		int* tmp = malloc(sizeof(double));
+		int* tmp = malloc(sizeof(int));
 		*(tmp) = rand() % 2001;
 		if(rand()%2)
 			*(tmp) = *(tmp) * -1;
