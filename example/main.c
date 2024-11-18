@@ -53,6 +53,17 @@ void* Find_Maximum_Element_In_LL(void* Data, bool first, bool last)
 	return NULL;
 }
 
+static void* Print_Num(void* Data, bool first, bool last)
+{
+  int num = *((int*)Data);
+  if(first)
+    printf("{ ");
+  printf("%i, ",num);
+  if(last)
+    printf("}\n");
+  return NULL;
+}
+
 void* Calculate_LL_Average(void* Data, bool first, bool last)
 {
 	static double sum;
@@ -96,11 +107,16 @@ void Insert_Word_Space_After_Space(struct TinyLL* List)
 	}
 }
 
+bool Is_Greater_Int(void* a,void* b)
+{
+  return *((int*)a) >= *((int*)b);
+}
 
 int main()
 {
 	struct TinyLL* Doubles_List = Create_New_Empty_List(NULL);
-	srand(time(NULL));
+	int seed = time(NULL);
+	srand(seed);
 	/*Create linked list of 1000000 doubles and populate it */
 	int index = 0;
 	while(index < 100000)
@@ -134,5 +150,19 @@ int main()
 	Insert_Word_Space_After_Space(String_List);
 	Iterate_Over(String_List, Print_LL_String);
 	Destroy_List(String_List);
-  return 0;
+	struct TinyLL* Integer_List = Create_New_Empty_List(NULL);
+	index = 0;
+	while(index < 400)
+	{
+		int* tmp = malloc(sizeof(double));
+		*(tmp) = rand() % 1001;
+		Insert_Element_At_The_End(Integer_List, tmp);
+		index++;
+	}
+	Integer_List = Strand_Sort(Integer_List,Is_Greater_Int);
+	printf("Final sorted: ");
+	Iterate_Over(Integer_List, Print_Num);
+	Destroy_List(Integer_List);
+	printf("Seed: %i\n",seed);
+	return 0;
 }

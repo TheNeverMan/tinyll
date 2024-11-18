@@ -1,6 +1,5 @@
- #include "tinyll.h"
-
-
+#include "tinyll.h"
+#include <stdio.h>
 
 struct TinyLL* Create_New_Empty_List(void (*Destroy_Data)(void*))
 {
@@ -117,4 +116,101 @@ void Delete_Element_At_Position(struct TinyLL* List, struct TinyLL_Node* To_Be_D
 void Delete_Element_At_The_End(struct TinyLL* List)
 {
   Delete_Element_At_Position(List, List->Last);
+}
+
+static struct TinyLL_Node* Insert_After_And_Remove(struct TinyLL* To, struct TinyLL* From, struct TinyLL_Node* After, struct TinyLL_Node* To_Be_Inserted)
+{
+  struct TinyLL_Node* After_Next = After->Next;
+  struct TinyLL_Node* To_Be_Inserted_Next = To_Be_Inserted->Next;
+  if(!After->Next)
+    To->Last = To_Be_Inserted;
+  After->Next = To_Be_Inserted;
+  After->Next->Next = After_Next;
+  if(!To_Be_Inserted_Next)
+    From->Last = NULL;
+  From->First = To_Be_Inserted_Next;
+  return To_Be_Inserted_Next;
+}
+
+static void Insert_First_And_Remove(struct TinyLL* To, struct TinyLL* From)
+{
+  struct TinyLL_Node* To_First = To->First;
+  struct TinyLL_Node* To_Be_Inserted_Next = From->First->Next;
+  if(!To->Last) /* what the fuck adding to empty list i guess */
+    To->Last = From->First;
+  To->First = From->First;
+  To->First->Next = To_First;
+  if(!To_Be_Inserted_Next)
+    From->Last = NULL;
+  From->First = To_Be_Inserted_Next;
+}
+
+static void Merge(struct TinyLL* Main, struct TinyLL* To_Be_Merged, bool (*Is_Greater_Or_Equal)(void*,void*))
+{
+  struct TinyLL_Node* Iterator_Main = Main->First;
+  struct TinyLL_Node* Iterator_Merged = NULL;
+  if(!Iterator_Main)
+  {
+    Main->First = To_Be_Merged->First;
+    Main->Last = To_Be_Merged->Last;
+    *Main = *To_Be_Merged;
+    return;
+  }
+  while(To_Be_Merged->First && Is_Greater_Or_Equal(Main->First->Data,To_Be_Merged->First->Data))
+    Insert_First_And_Remove(Main,To_Be_Merged);
+  Iterator_Merged = To_Be_Merged->First;
+  Iterator_Main = Main->First;
+  while(Iterator_Merged)
+    if(Is_Greater_Or_Equal(Iterator_Merged->Data,Iterator_Main->Data) && !(Iterator_Main->Next && Is_Greater_Or_Equal(Iterator_Merged->Data,Iterator_Main->Next->Data)))
+      Iterator_Merged = Insert_After_And_Remove(Main,To_Be_Merged,Iterator_Main,Iterator_Merged);
+    else
+      if(Iterator_Main->Next)
+        Iterator_Main = Iterator_Main->Next;
+}
+
+
+
+
+struct TinyLL* Strand_Sort(struct TinyLL* List, bool (*Is_Greater_Or_Equal)(void*,void*))
+{
+
+  struct TinyLL* out = Create_New_Empty_List(List->Destroy_Data);
+  while(List->First)
+  {
+    if(!List->First->Next)
+    {
+      Merge(out,List,Is_Greater_Or_Equal);
+      break;
+    }
+    struct TinyLL* Sub_List = Create_New_Empty_List(List->Destroy_Data);
+    struct TinyLL_Node* Iterator = NULL;
+    struct TinyLL_Node* Prev_Iterator = NULL;
+    Sub_List->First = List->First;
+    Sub_List->Last = List->First;
+    List->First = List->First->Next;
+    Sub_List->Last->Next = NULL;
+    Iterator = List->First->Next;
+    Prev_Iterator = List->First;
+    while(Iterator)
+    {
+      if(Is_Greater_Or_Equal(Iterator->Data,Sub_List->Last->Data))
+      {
+        struct TinyLL_Node* tmp = Iterator->Next;
+        Sub_List->Last->Next = Iterator;
+        Sub_List->Last = Iterator;
+        Sub_List->Last->Next = NULL;
+        Iterator = tmp;
+        Prev_Iterator->Next = Iterator;
+        if(!Prev_Iterator->Next)
+          List->Last = Prev_Iterator;
+        continue;
+      }
+      Prev_Iterator = Iterator;
+      Iterator = Iterator->Next;
+    }
+    Merge(out,Sub_List,Is_Greater_Or_Equal);
+    free(Sub_List);
+  }
+  free(List);
+  return out;
 }
